@@ -1,0 +1,2 @@
+FROM alpine:latest
+RUN apk update && apk add iperf3 iperf tcpdump scapy netcat-openbsd ethtool
