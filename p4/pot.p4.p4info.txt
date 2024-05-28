@@ -1,0 +1,378 @@
+pkg_info {
+  arch: "v1model"
+}
+tables {
+  preamble {
+    id: 49807783
+    name: "PoT.t_pot"
+    alias: "t_pot"
+  }
+  match_fields {
+    id: 1
+    name: "hdr.nshPot.servicePathIdentifier"
+    bitwidth: 24
+    match_type: EXACT
+  }
+  match_fields {
+    id: 2
+    name: "hdr.nshPot.serviceIndex"
+    bitwidth: 8
+    match_type: EXACT
+  }
+  match_fields {
+    id: 3
+    name: "hdr.ipv4.dstAddr"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  action_refs {
+    id: 22122161
+  }
+  action_refs {
+    id: 20911407
+  }
+  action_refs {
+    id: 20218255
+  }
+  action_refs {
+    id: 28598302
+  }
+  action_refs {
+    id: 21257015
+  }
+  size: 1024
+}
+tables {
+  preamble {
+    id: 46921072
+    name: "PoT.routing_table"
+    alias: "routing_table"
+  }
+  match_fields {
+    id: 1
+    name: "hdr.inner_ipv4.dstAddr"
+    bitwidth: 32
+    match_type: LPM
+  }
+  match_fields {
+    id: 2
+    name: "standard_metadata.ingress_port"
+    bitwidth: 9
+    match_type: EXACT
+  }
+  action_refs {
+    id: 30215141
+  }
+  action_refs {
+    id: 28598302
+  }
+  action_refs {
+    id: 21257015
+  }
+  size: 1024
+}
+tables {
+  preamble {
+    id: 36782487
+    name: "PoT.clone_table"
+    alias: "clone_table"
+  }
+  match_fields {
+    id: 1
+    name: "hdr.inner_ipv4.dstAddr"
+    bitwidth: 32
+    match_type: LPM
+  }
+  match_fields {
+    id: 2
+    name: "standard_metadata.ingress_port"
+    bitwidth: 9
+    match_type: EXACT
+  }
+  action_refs {
+    id: 33080812
+  }
+  action_refs {
+    id: 21257015
+    annotations: "@defaultonly"
+    scope: DEFAULT_ONLY
+  }
+  size: 1024
+}
+tables {
+  preamble {
+    id: 42982526
+    name: "MyEgress.metrics_table"
+    alias: "metrics_table"
+  }
+  action_refs {
+    id: 22933703
+  }
+  action_refs {
+    id: 21257015
+    annotations: "@defaultonly"
+    scope: DEFAULT_ONLY
+  }
+  size: 1024
+}
+actions {
+  preamble {
+    id: 21257015
+    name: "NoAction"
+    alias: "NoAction"
+    annotations: "@noWarn(\"unused\")"
+  }
+}
+actions {
+  preamble {
+    id: 28598302
+    name: "PoT.drop"
+    alias: "drop"
+  }
+}
+actions {
+  preamble {
+    id: 32451121
+    name: "PoT.compute_prime_module"
+    alias: "compute_prime_module"
+  }
+}
+actions {
+  preamble {
+    id: 33080812
+    name: "PoT.do_clone"
+    alias: "do_clone"
+  }
+}
+actions {
+  preamble {
+    id: 30215141
+    name: "PoT.ipv4_forward"
+    alias: "ipv4_forward"
+  }
+  params {
+    id: 1
+    name: "srcAddr"
+    bitwidth: 48
+  }
+  params {
+    id: 2
+    name: "dstAddr"
+    bitwidth: 48
+  }
+  params {
+    id: 3
+    name: "port"
+    bitwidth: 9
+  }
+}
+actions {
+  preamble {
+    id: 22122161
+    name: "PoT.pot_ingress"
+    alias: "pot_ingress"
+  }
+  params {
+    id: 1
+    name: "prime"
+    bitwidth: 64
+  }
+  params {
+    id: 2
+    name: "identifier"
+    bitwidth: 24
+  }
+  params {
+    id: 3
+    name: "serviceIndex"
+    bitwidth: 8
+  }
+  params {
+    id: 4
+    name: "secretShare"
+    bitwidth: 64
+  }
+  params {
+    id: 5
+    name: "publicPol"
+    bitwidth: 64
+  }
+  params {
+    id: 6
+    name: "lpc"
+    bitwidth: 64
+  }
+  params {
+    id: 7
+    name: "upstreamMask"
+    bitwidth: 128
+  }
+  params {
+    id: 8
+    name: "magic_M"
+    bitwidth: 64
+  }
+  params {
+    id: 9
+    name: "magic_a"
+    bitwidth: 1
+  }
+  params {
+    id: 10
+    name: "magic_s"
+    bitwidth: 5
+  }
+}
+actions {
+  preamble {
+    id: 20911407
+    name: "PoT.pot_forward"
+    alias: "pot_forward"
+  }
+  params {
+    id: 1
+    name: "prime"
+    bitwidth: 64
+  }
+  params {
+    id: 2
+    name: "secretShare"
+    bitwidth: 64
+  }
+  params {
+    id: 3
+    name: "publicPol"
+    bitwidth: 64
+  }
+  params {
+    id: 4
+    name: "lpc"
+    bitwidth: 64
+  }
+  params {
+    id: 5
+    name: "upstreamMask"
+    bitwidth: 128
+  }
+  params {
+    id: 6
+    name: "downstreamMask"
+    bitwidth: 128
+  }
+  params {
+    id: 7
+    name: "magic_M"
+    bitwidth: 64
+  }
+  params {
+    id: 8
+    name: "magic_a"
+    bitwidth: 1
+  }
+  params {
+    id: 9
+    name: "magic_s"
+    bitwidth: 5
+  }
+}
+actions {
+  preamble {
+    id: 20218255
+    name: "PoT.pot_egress"
+    alias: "pot_egress"
+  }
+  params {
+    id: 1
+    name: "prime"
+    bitwidth: 64
+  }
+  params {
+    id: 2
+    name: "secretShare"
+    bitwidth: 64
+  }
+  params {
+    id: 3
+    name: "publicPol"
+    bitwidth: 64
+  }
+  params {
+    id: 4
+    name: "lpc"
+    bitwidth: 64
+  }
+  params {
+    id: 5
+    name: "downstreamMask"
+    bitwidth: 128
+  }
+  params {
+    id: 6
+    name: "validator_key"
+    bitwidth: 64
+  }
+  params {
+    id: 7
+    name: "magic_M"
+    bitwidth: 64
+  }
+  params {
+    id: 8
+    name: "magic_a"
+    bitwidth: 1
+  }
+  params {
+    id: 9
+    name: "magic_s"
+    bitwidth: 5
+  }
+}
+actions {
+  preamble {
+    id: 22933703
+    name: "MyEgress.send_metrics"
+    alias: "send_metrics"
+  }
+  params {
+    id: 1
+    name: "srcAddr"
+    bitwidth: 48
+  }
+  params {
+    id: 2
+    name: "dstAddr"
+    bitwidth: 48
+  }
+  params {
+    id: 3
+    name: "port"
+    bitwidth: 9
+  }
+  params {
+    id: 4
+    name: "ipSrcAddr"
+    bitwidth: 32
+  }
+  params {
+    id: 5
+    name: "ipDstAddr"
+    bitwidth: 32
+  }
+}
+registers {
+  preamble {
+    id: 371877223
+    name: "hdr_seq_num_register"
+    alias: "hdr_seq_num_register"
+  }
+  type_spec {
+    bitstring {
+      bit {
+        bitwidth: 32
+      }
+    }
+  }
+  size: 1
+}
+type_info {
+}
