@@ -63,5 +63,8 @@ To delete the scenario after being deployed:
 - "numpy", "sympy" and "mpmath" python libraries
 
 
-table_delete PoT.t_pot 0
-table_dump PoT.t_pot 
+### Private repository for Docker Images
+https://hub.docker.com/r/mattinelorza/pot
+
+<table_delete PoT.t_pot 0> 
+<table_dump PoT.t_pot>  
