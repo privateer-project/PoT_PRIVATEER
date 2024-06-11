@@ -9,6 +9,7 @@ from copy import copy
 import io
 from influxdb import InfluxDBClient
 
+
 # Log configuration
 log_format = "[%(asctime)s] [%(levelname)s] - %(message)s"
 logging.basicConfig(level=logging.INFO, format=log_format, filename="logs/int_collector.log")
@@ -16,6 +17,7 @@ logger = logging.getLogger('int_collector')
 
 first=True
 current_timestamp = 0
+
 
 class IntReport():
     def __init__(self, data, address):
@@ -27,6 +29,7 @@ class IntReport():
         (self.service_path_identifier, self.service_index, self.rnd, self.cml, self.seq_number, self.dropped) = struct.unpack(fmt, self.int_report_hdr)
         self.service_path_identifier = int.from_bytes(self.service_path_identifier, byteorder='big', signed=False)
         self.address = address
+        
 
         global first
         global current_timestamp
@@ -47,6 +50,7 @@ class IntCollector():
         self.reports = [] # list of reports
         self.period = period # maximum time delay of int report sending to influx
         self.last_send = time.time() # last time when reports were send to influx
+        
         
     def add_report(self, report):
         self.reports.append(report)
@@ -81,6 +85,7 @@ class IntCollector():
         
     def __send_reports(self):
         json_body = []
+        
         for report in self.reports:
             json_body.extend(self.__prepare_reports(report))
         logger.info("Json body for influx:\n %s" % pprint.pformat(json_body))
