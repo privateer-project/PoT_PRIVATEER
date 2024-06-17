@@ -78,7 +78,8 @@ class IntCollector():
                 "RND": report.rnd,
                 "CML": report.cml,
                 "Sequence Number": report.seq_number,
-                "Dropped": report.dropped
+                "Dropped": report.dropped,
+                "ServiceID": "57310caf-bcc4-4008-82b8-6cfa6263bbcd"
             }
         }
         return json_report
