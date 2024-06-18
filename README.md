@@ -44,14 +44,18 @@ Scenario 1 replaces an OPoT node with the malicious node and Scenario 2 intercep
 ./scenario-generator.sh n docker
 ```
 2. Tear down the docker scenario
-docker-compose down
-3. Replace the three files in the malicious_node folder with the ones generated (docker-compose-big.yaml, run.sh and switches.json)
-4. Start the docker scenario
 ```
-docker-compose -f docker/docker-compose-big.yaml up -d
+./destroy-malicious.sh
+```
+4. Copy the three files in the malicious_node folder (docker-compose-big.yaml to "docker" folder, run.sh to "docker" folder and switches.json to "config" folder)
+5. Add execution permits to run.sh
+6. Start the docker scenario
+```
+./scenario-generator-malicious.sh
 ```
 
 Repeat the same steps to check that host do not have connectivity and metrics stored are marked with the "dropped" flag
+Take into account that malicious scenarios are prepared for 4 nodes deployments, if you want to test with different node-number malicious scenarios check "alt_scenarios" folder notes
 
 To delete the scenario after being deployed:
 ```
@@ -62,6 +66,26 @@ To delete the scenario after being deployed:
 - Python 3
 - "numpy", "sympy" and "mpmath" python libraries
 
+# Kafka commands
+
+## To deploy kafka container
+
+docker run --network=kafka-net --rm --name broker -p 9092:9092 -e KAFKA_BROKER_ID=1 -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://broker:9092 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 bashj79/kafka-kraft
+
+Create the topic:
+```
+./kafka-topics.sh --bootstrap-server localhost:9092 --create --topic PoT-tests --partitions 1 --replication-factor 1
+
+```
+List the topics
+```
+./kafka-topics.sh --bootstrap-server localhost:9092 --list
+```
+
+Consume from the topic on localhost
+```
+./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic PoT-tests --from-beginning
+```
 
 ### Private repository for Docker Images
 https://hub.docker.com/r/mattinelorza/pot
