@@ -29,8 +29,7 @@ if  [ -n "$2" ] && [ $2 = "docker" ]; then
 			ip route add 10.1.1.0/24 via 10.1.2.2
 		fi
 	elif [ $1 = "controller" ]; then
-        sudo pip install kafka-python
-        sudo pip install confluent_kafka
+        sudo pip3 install confluent_kafka
 		parameters_generation/gen_keys.sh $2
 		sudo chmod 777 keys/ca.crt
 		sudo cp controller/switch.py /home/p4/tutorials/utils/p4runtime_lib/switch.py
@@ -57,7 +56,7 @@ if  [ -n "$2" ] && [ $2 = "docker" ]; then
 	# Change script file permission
 	chmod +x docker/run.sh
 	# Docker Compose file generation
-    echo "version: '2'
+    echo "version: '3'
 services:
     h1:
         image: scapy
@@ -125,7 +124,7 @@ services:
         networks:
             controller:
                 ipv4_address: 10.0.0.10
-            kafka-net: 
+            kafka-net:
                 ipv4_address: 10.2.1.10
         volumes:
         - ../:/home/p4/pot" > docker/docker-compose-big.yaml
@@ -221,7 +220,6 @@ services:
                 - subnet: 10.0.0.0/24
     kafka-net:
         external: true" >> docker/docker-compose-big.yaml
-
     # Add middle node networks
     for (( i=1; i<=$(($NUM_MIDDLE_NODES-1)); i++ ))
     do

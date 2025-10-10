@@ -631,30 +631,8 @@
       ]
     },
     {
-      "name" : "PoT.drop",
-      "id" : 5,
-      "runtime_data" : [],
-      "primitives" : [
-        {
-          "op" : "mark_to_drop",
-          "parameters" : [
-            {
-              "type" : "header",
-              "value" : "standard_metadata"
-            }
-          ],
-          "source_info" : {
-            "filename" : "p4/pot.p4",
-            "line" : 196,
-            "column" : 9,
-            "source_fragment" : "mark_to_drop(standard_metadata)"
-          }
-        }
-      ]
-    },
-    {
       "name" : "PoT.compute_prime_module",
-      "id" : 6,
+      "id" : 5,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -783,7 +761,7 @@
     },
     {
       "name" : "PoT.do_clone",
-      "id" : 7,
+      "id" : 6,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -847,7 +825,7 @@
     },
     {
       "name" : "PoT.ipv4_forward",
-      "id" : 8,
+      "id" : 7,
       "runtime_data" : [
         {
           "name" : "srcAddr",
@@ -924,7 +902,7 @@
     },
     {
       "name" : "PoT.pot_ingress",
-      "id" : 9,
+      "id" : 8,
       "runtime_data" : [
         {
           "name" : "prime",
@@ -2484,7 +2462,7 @@
     },
     {
       "name" : "PoT.pot_forward",
-      "id" : 10,
+      "id" : 9,
       "runtime_data" : [
         {
           "name" : "prime",
@@ -3876,7 +3854,7 @@
     },
     {
       "name" : "PoT.pot_egress",
-      "id" : 11,
+      "id" : 10,
       "runtime_data" : [
         {
           "name" : "prime",
@@ -6251,7 +6229,7 @@
     },
     {
       "name" : "pot474",
-      "id" : 12,
+      "id" : 11,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -6292,7 +6270,7 @@
     },
     {
       "name" : "pot481",
-      "id" : 13,
+      "id" : 12,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -6341,13 +6319,13 @@
     },
     {
       "name" : "NoAction",
-      "id" : 14,
+      "id" : 13,
       "runtime_data" : [],
       "primitives" : []
     },
     {
       "name" : "MyEgress.send_metrics",
-      "id" : 15,
+      "id" : 14,
       "runtime_data" : [
         {
           "name" : "srcAddr",
@@ -6781,7 +6759,7 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [9, 10, 11, 3, 0],
+          "action_ids" : [8, 9, 10, 3, 0],
           "actions" : ["PoT.pot_ingress", "PoT.pot_forward", "PoT.pot_egress", "PoT.drop", "NoAction"],
           "base_default_next" : "node_3",
           "next_tables" : {
@@ -6814,14 +6792,14 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [12],
+          "action_ids" : [11],
           "actions" : ["pot474"],
           "base_default_next" : "PoT.routing_table",
           "next_tables" : {
             "pot474" : "PoT.routing_table"
           },
           "default_entry" : {
-            "action_id" : 12,
+            "action_id" : 11,
             "action_const" : true,
             "action_data" : [],
             "action_entry_const" : true
@@ -6856,7 +6834,7 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [8, 4, 1],
+          "action_ids" : [7, 4, 1],
           "actions" : ["PoT.ipv4_forward", "PoT.drop", "NoAction"],
           "base_default_next" : "tbl_pot481",
           "next_tables" : {
@@ -6887,14 +6865,14 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [13],
+          "action_ids" : [12],
           "actions" : ["pot481"],
           "base_default_next" : "tbl_compute_prime_module",
           "next_tables" : {
             "pot481" : "tbl_compute_prime_module"
           },
           "default_entry" : {
-            "action_id" : 13,
+            "action_id" : 12,
             "action_const" : true,
             "action_data" : [],
             "action_entry_const" : true
@@ -6916,14 +6894,14 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [6],
+          "action_ids" : [5],
           "actions" : ["PoT.compute_prime_module"],
           "base_default_next" : "node_8",
           "next_tables" : {
             "PoT.compute_prime_module" : "node_8"
           },
           "default_entry" : {
-            "action_id" : 6,
+            "action_id" : 5,
             "action_const" : true,
             "action_data" : [],
             "action_entry_const" : true
@@ -6958,47 +6936,18 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [7, 2],
+          "action_ids" : [6, 2],
           "actions" : ["PoT.do_clone", "NoAction"],
-          "base_default_next" : "node_10",
+          "base_default_next" : null,
           "next_tables" : {
-            "PoT.do_clone" : "node_10",
-            "NoAction" : "node_10"
+            "PoT.do_clone" : null,
+            "NoAction" : null
           },
           "default_entry" : {
             "action_id" : 2,
             "action_const" : false,
             "action_data" : [],
             "action_entry_const" : false
-          }
-        },
-        {
-          "name" : "tbl_drop",
-          "id" : 6,
-          "source_info" : {
-            "filename" : "p4/pot.p4",
-            "line" : 491,
-            "column" : 10,
-            "source_fragment" : "drop()"
-          },
-          "key" : [],
-          "match_type" : "exact",
-          "type" : "simple",
-          "max_size" : 1024,
-          "with_counters" : false,
-          "support_timeout" : false,
-          "direct_meters" : null,
-          "action_ids" : [5],
-          "actions" : ["PoT.drop"],
-          "base_default_next" : null,
-          "next_tables" : {
-            "PoT.drop" : null
-          },
-          "default_entry" : {
-            "action_id" : 5,
-            "action_const" : true,
-            "action_data" : [],
-            "action_entry_const" : true
           }
         }
       ],
@@ -7073,34 +7022,8 @@
               }
             }
           },
-          "true_next" : "PoT.clone_table",
-          "false_next" : "node_10"
-        },
-        {
-          "name" : "node_10",
-          "id" : 2,
-          "source_info" : {
-            "filename" : "p4/pot.p4",
-            "line" : 489,
-            "column" : 12,
-            "source_fragment" : "meta.dropped == 1"
-          },
-          "expression" : {
-            "type" : "expression",
-            "value" : {
-              "op" : "==",
-              "left" : {
-                "type" : "field",
-                "value" : ["scalars", "metadata.dropped"]
-              },
-              "right" : {
-                "type" : "hexstr",
-                "value" : "0x01"
-              }
-            }
-          },
           "false_next" : null,
-          "true_next" : "tbl_drop"
+          "true_next" : "PoT.clone_table"
         }
       ]
     },
@@ -7113,11 +7036,11 @@
         "column" : 8,
         "source_fragment" : "MyEgress"
       },
-      "init_table" : "node_14",
+      "init_table" : "node_12",
       "tables" : [
         {
           "name" : "MyEgress.metrics_table",
-          "id" : 7,
+          "id" : 6,
           "source_info" : {
             "filename" : "p4/pot.p4",
             "line" : 542,
@@ -7131,7 +7054,7 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [15, 14],
+          "action_ids" : [14, 13],
           "actions" : ["MyEgress.send_metrics", "NoAction"],
           "base_default_next" : null,
           "next_tables" : {
@@ -7139,7 +7062,7 @@
             "NoAction" : null
           },
           "default_entry" : {
-            "action_id" : 14,
+            "action_id" : 13,
             "action_const" : false,
             "action_data" : [],
             "action_entry_const" : false
@@ -7149,8 +7072,8 @@
       "action_profiles" : [],
       "conditionals" : [
         {
-          "name" : "node_14",
-          "id" : 3,
+          "name" : "node_12",
+          "id" : 2,
           "source_info" : {
             "filename" : "p4/pot.p4",
             "line" : 551,

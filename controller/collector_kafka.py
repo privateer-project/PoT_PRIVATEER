@@ -8,8 +8,15 @@ import logging
 from copy import copy
 import io
 import json
+import requests
+import subprocess
 from influxdb import InfluxDBClient
 from confluent_kafka import Producer
+
+
+BASE_URL = "http://10.160.3.213:3001"
+TOKEN_URL = f"{BASE_URL}/issueJwtToken"
+POST_URL = f"{BASE_URL}/api/transactions/storePoT"
 
 # Log configuration
 log_format = "[%(asctime)s] [%(levelname)s] - %(message)s"
@@ -20,9 +27,46 @@ first = True
 current_timestamp = 0
 
 # Kafka configuration
-kafka_conf = {'bootstrap.servers': '10.2.1.3:9092'}
+kafka_conf = {'bootstrap.servers': '10.160.3.213:9092'}
 kafka_producer = Producer(kafka_conf)
 kafka_topic = "PoT-tests"
+
+
+def get_jwt_token():
+    """Fetch JWT token from the API."""
+    try:
+        response = requests.get(TOKEN_URL)
+        if response.status_code == 200:
+            token = response.json().get("data") #because it is being saved as data:
+            logger.info("Successfully obtained JWT token.")
+            logger.info("Token received: %s",token)
+            return token
+        else:
+            logger.info("Failed to obtain JWT token: %s", response.text)
+            return None
+    except Exception as e:
+        logger.info("Exception while fetching JWT token: %s", e)
+        return None
+
+JWT_TOKEN = get_jwt_token()
+
+def get_updated_geolocation():
+    try:
+        command = 'curl -s "http://ipinfo.io/$(curl -s ifconfig.me)/json"'
+        result = subprocess.check_output(command, shell=True)
+        data = json.loads(result.decode('utf-8'))
+        geolocation = "10.1.2.0/24,{country},{region},{city},{loc},50".format(
+            country=data.get("country", "Unknown"),
+            region=data.get("region", "Unknown"),
+            city=data.get("city", "Unknown"),
+            loc=data.get("loc", "Unknown")
+        )
+        logger.info("Updategeolocation: %s", geolocation)
+        return geolocation
+    except Exception as e:
+        logger.exception("Fail obtaining the geolocation: %s", e)
+        return "10.1.2.0/24,Unknown,Unknown,Unknown,0,0,50"
+
 
 class IntReport():
     def __init__(self, data, address):
@@ -66,31 +110,44 @@ class IntCollector():
             self._send_reports()
             self.last_send = time.time()
             
-    def _prepare_reports(self, report):
+    def _prepare_reports(self, report, exclude_keys=None):
         # Report structure
         json_report = {
             "measurement": "int_telemetry",
             'time': report.timestamp,
             "fields": {
-                "Switch IP": report.address,
-                "Service Path Identifier": report.service_path_identifier,
-                "Service Index": report.service_index,
-                "RND": report.rnd,
                 "CML": report.cml,
-                "Sequence Number": report.seq_number,
                 "Dropped": report.dropped,
-                "ServiceID": "57310caf-bcc4-4008-82b8-6cfa6263bbcd"
+                "Geolocation": get_updated_geolocation(), 
+                "RND": report.rnd,
+                "sequenceNumber": report.seq_number,
+                "serviceIndex": report.service_index,
+                "servicePathIdentifier": report.service_path_identifier,
+                "serviceID": "57310caf-bcc4-4008-82b8-6cfa6263bbcd",
+                "switchIP": report.address,
+                "measurement": "int_telemetry",
+                "time": report.timestamp
             }
         }
+        
+        if exclude_keys:
+            for key in exclude_keys:
+                json_report.pop(key, None)
+            
         return json_report
         
     def _send_reports(self):
+        global JWT_TOKEN
         json_body = []
         kafka_reports = []
+        DLT_reports = []
         for report in self.reports:
             json_report = self._prepare_reports(report)
             json_body.append(json_report)
             kafka_reports.append(json.dumps(json_report))
+            dlt_report= self._prepare_reports(report,exclude_keys=["measurement","time"])
+            dlt_report2= dlt_report["fields"]
+            DLT_reports.append(dlt_report2)
 
         logger.info("Json body for influx:\n %s" % pprint.pformat(json_body))
         if json_body:
@@ -109,6 +166,41 @@ class IntCollector():
 
         kafka_producer.flush()
         self.reports = []  # clear reports sent
+        
+        
+        # Send reports to the REST API
+        if JWT_TOKEN:
+            
+            logger.info("Reports available: %s", len(self.reports))
+            #logger.info("Report details: %s", self.reports)
+            #logger.info("DLT: %s", len(DLT_reports))
+            logger.info("Informacion enviada en categoryTrustSources a la DLT: %s", DLT_reports)
+
+            #category_trust_sources = [self._prepare_reports(report) for report in self.reports]
+
+            payload = {
+                "dbPointer": "pointer",
+                "categoryTrustSources": DLT_reports,  # antes category_trust_sources
+                "oracleSignature": "signature",
+                "timestamp": int(time.time())
+            }
+            
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {JWT_TOKEN}"
+            }
+
+            try:
+                response = requests.post(POST_URL, json=payload, headers=headers)
+                if response.status_code == 200:
+                    logger.info("Successfully sent data to REST API: %s", response.json())
+                    logger.info("Mensaje de prueba %s",DLT_reports)
+                else:
+                    logger.info("Failed to send data to REST API: %s", response.text)
+            except Exception as e:
+                logger.info("Exception while sending data to REST API: %s", e)
+        else:
+            logger.info("Skipping API call: JWT token is missing.")
 
 def unpack_int_report(packet, address):
     report = IntReport(packet, address)

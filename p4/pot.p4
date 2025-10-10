@@ -488,7 +488,7 @@ control PoT(inout headers hdr,
         // If drop flag is active, discard packet
         if (meta.dropped == 1) {
           //meta.dropped = 0;
-          drop();
+          //drop(); //if we dont want to dropp in case of a heterogeneous scenario just comment it
         }
     }
 }

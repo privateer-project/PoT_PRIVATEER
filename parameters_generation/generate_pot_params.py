@@ -7,6 +7,8 @@ import json
 import os
 import ctypes
 
+
+
 # Struct `mu` definition in Python
 class Mu(ctypes.Structure):
     _fields_ = [
@@ -50,7 +52,19 @@ def handle_calculate_lpcs(x_points, prime):
             if i != j:
                 top = top * np.int64(-x_points[j])
                 bot = bot * np.int64(x_points[i] - x_points[j])
-        lpc_value = (top * sympy.mod_inverse(bot, prime)) % prime
+                #if bot <= 0 :
+                #    lpc_value=(top * sympy.mod_inverse(bot, prime)) % prime
+                #    print("prueba")
+                
+                #print ("prueba 2")
+                lpc_value=(top * sympy.mod_inverse(bot, prime)) % prime
+
+
+        
+        
+        #lpc_value = (top * sympy.mod_inverse(bot, prime)) % prime
+            
+
         # print("LPC" + str(i) + ": " + str((top * modinv(bot, prime)) % prime))
         lpcs.append(lpc_value)
     return lpcs

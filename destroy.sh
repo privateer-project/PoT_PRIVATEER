@@ -1,5 +1,5 @@
 #!/bin/bash
-sudo docker-compose -f docker/docker-compose-big.yaml down
+docker-compose -f docker/docker-compose-big.yaml down
 rm -rf logs/
 rm -rf config/
 rm -rf parameters_generation/keys/

@@ -1,10 +1,10 @@
 
-[2024-05-28 14:33:50.014] /p4.v1.P4Runtime/SetForwardingPipelineConfig
+[2025-10-08 09:07:07.584] /p4.v1.P4Runtime/SetForwardingPipelineConfig
 ---
-Message too long (405798 bytes)! Skipping log...
+Message too long (403502 bytes)! Skipping log...
 ---
 
-[2024-05-28 14:33:50.196] /p4.v1.P4Runtime/Write
+[2025-10-08 09:07:07.718] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -25,7 +25,7 @@ updates {
 }
 ---
 
-[2024-05-28 14:33:50.199] /p4.v1.P4Runtime/Write
+[2025-10-08 09:07:07.720] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -46,7 +46,7 @@ updates {
 }
 ---
 
-[2024-05-28 14:33:50.201] /p4.v1.P4Runtime/Write
+[2025-10-08 09:07:07.721] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -91,7 +91,7 @@ updates {
 }
 ---
 
-[2024-05-28 14:33:50.203] /p4.v1.P4Runtime/Write
+[2025-10-08 09:07:07.723] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -136,17 +136,67 @@ updates {
 }
 ---
 
-[2024-05-28 14:33:50.204] /p4.v1.P4Runtime/Write
+[2025-10-08 09:07:07.725] /p4.v1.P4Runtime/Write
 ---
-Message too long (1474 bytes)! Skipping log...
+election_id {
+  low: 1
+}
+updates {
+  type: INSERT
+  entity {
+    table_entry {
+      table_id: 46921072
+      match {
+        field_id: 1
+        lpm {
+          value: "\n\001\001\004"
+          prefix_len: 32
+        }
+      }
+      match {
+        field_id: 2
+        exact {
+          value: "\000\002"
+        }
+      }
+      action {
+        action {
+          action_id: 30215141
+          params {
+            param_id: 1
+            value: "\002B\n\001\001\002"
+          }
+          params {
+            param_id: 2
+            value: "\002B\n\001\001\004"
+          }
+          params {
+            param_id: 3
+            value: "\000\001"
+          }
+        }
+      }
+    }
+  }
+}
 ---
 
-[2024-05-28 14:33:50.205] /p4.v1.P4Runtime/Write
+[2025-10-08 09:07:07.726] /p4.v1.P4Runtime/Write
 ---
-Message too long (1409 bytes)! Skipping log...
+Message too long (1488 bytes)! Skipping log...
 ---
 
-[2024-05-28 14:33:50.206] /p4.v1.P4Runtime/Write
+[2025-10-08 09:07:07.727] /p4.v1.P4Runtime/Write
+---
+Message too long (1420 bytes)! Skipping log...
+---
+
+[2025-10-08 09:07:07.728] /p4.v1.P4Runtime/Write
+---
+Message too long (1417 bytes)! Skipping log...
+---
+
+[2025-10-08 09:07:07.729] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -186,7 +236,7 @@ updates {
 }
 ---
 
-[2024-05-28 14:33:50.207] /p4.v1.P4Runtime/Write
+[2025-10-08 09:07:07.731] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -219,7 +269,40 @@ updates {
 }
 ---
 
-[2024-05-28 14:33:50.208] /p4.v1.P4Runtime/Write
+[2025-10-08 09:07:07.732] /p4.v1.P4Runtime/Write
+---
+election_id {
+  low: 1
+}
+updates {
+  type: INSERT
+  entity {
+    table_entry {
+      table_id: 36782487
+      match {
+        field_id: 1
+        lpm {
+          value: "\n\001\001\004"
+          prefix_len: 32
+        }
+      }
+      match {
+        field_id: 2
+        exact {
+          value: "\000\002"
+        }
+      }
+      action {
+        action {
+          action_id: 33080812
+        }
+      }
+    }
+  }
+}
+---
+
+[2025-10-08 09:07:07.733] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -252,7 +335,7 @@ updates {
 }
 ---
 
-[2024-05-28 14:33:50.209] /p4.v1.P4Runtime/Write
+[2025-10-08 09:07:07.734] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -273,7 +356,7 @@ updates {
 }
 ---
 
-[2024-05-28 14:33:50.311] /p4.v1.P4Runtime/Read
+[2025-10-08 09:07:07.777] /p4.v1.P4Runtime/Read
 ---
 entities {
   table_entry {

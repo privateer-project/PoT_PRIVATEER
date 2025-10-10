@@ -34,7 +34,7 @@ if  [ -n "$2" ] && [ $2 = "docker" ]; then
 		sudo chmod 777 keys/ca.crt
 		sudo cp controller/switch.py /home/p4/tutorials/utils/p4runtime_lib/switch.py
 		sudo influxd &
-		sleep 10
+		sleep 20
 		influx -execute "CREATE DATABASE int_telemetry_db"
 		p4c-bm2-ss --p4v 16 --p4runtime-files p4/pot.p4.p4info.txt -o p4/pot.json p4/pot.p4
 		sudo python3 controller/runtimev2.py --p4info p4/pot.p4.p4info.txt --bmv2-json p4/pot.json --ssl
@@ -71,7 +71,7 @@ services:
         volumes:
         - ../:/home/p4/pot
     ingressNode:
-        image: p4custom-java
+        image: p4custom-kafka
         container_name: ingressNode
         cap_add:
         - NET_ADMIN
@@ -87,7 +87,7 @@ services:
         volumes:
         - ../:/home/p4/pot
     egressNode:
-        image: p4custom-java
+        image: p4custom-kafka
         container_name: egressNode
         cap_add:
         - NET_ADMIN
@@ -115,7 +115,7 @@ services:
         volumes:
         - ../:/home/p4/pot
     controller:
-        image: p4custom-java
+        image: p4custom-kafka
         container_name: controller
         cap_add:
         - NET_ADMIN
@@ -134,7 +134,7 @@ services:
     do
     if [ $i -eq 1 ]; then
         echo "    middleNode$i:
-        image: p4custom-java
+        image: p4custom-kafka
         container_name: middleNode$i
         cap_add:
         - NET_ADMIN
@@ -151,7 +151,7 @@ services:
         - ../:/home/p4/pot" >> docker/docker-compose-big.yaml
     elif [ $i -eq $NUM_MIDDLE_NODES ]; then
         echo "    middleNode$i:
-        image: p4custom-java
+        image: p4custom-kafka
         container_name: middleNode$i
         cap_add:
         - NET_ADMIN
@@ -168,7 +168,7 @@ services:
         - ../:/home/p4/pot" >> docker/docker-compose-big.yaml
     else
         echo "    middleNode$i:
-        image: p4custom-java
+        image: p4custom-kafka
         container_name: middleNode$i
         cap_add:
         - NET_ADMIN

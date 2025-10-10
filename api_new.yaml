@@ -1,0 +1,171 @@
+openapi: 3.0.0
+info:
+  title: Command Execution API
+  version: 1.2.1
+  description: API to execute scripts and commands. MATTIN A. ELORZA FORCADA 2025
+
+paths:
+  /run-command:
+    post:
+      summary: Execute a command
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                deploy:
+                  type: string
+                  description: >
+                    Logical name of the service to deploy. For example, "PoT_Service"
+                    internally maps to the appropriate shell script and parameters.
+                  example: "PoT_Service"
+                NodePoT:
+                  type: integer
+                  description: Number of nodes with PoT (between 1 and 10).
+                  example: 5
+                  minimum: 1
+                  maximum: 10
+                NodeNoPoT:
+                  type: integer
+                  description: Number of nodes without PoT (between 0 and 10).
+                  example: 2
+                  minimum: 0
+                  maximum: 10
+                option:
+                  type: string
+                  description: Execution option for the script (e.g., "docker").
+                  example: "docker"
+              required:
+                - deploy
+                - NodePoT
+                - NodeNoPoT
+                - option
+      responses:
+        '200':
+          description: Command executed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  STATUS:
+                    type: string
+                    example: "Success"
+                  SSSS OUTPUT:
+                    type: string
+                    example: "Command output"
+                  CREATED:
+                    type: string
+                    example: "Any error messages from the command"
+        '400':
+          description: Bad request due to missing or invalid parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Description of the validation error"
+        '500':
+          description: Server error while executing the script
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Detailed server-side error message"
+
+  /delete-script:
+    delete:
+      summary: Run the destroy script to delete a previously created scenario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                deploy:
+                  type: string
+                  description: >
+                    Logical name of the service to destroy. Although not used directly,
+                    it is required to validate the intention to delete a deployment.
+                  example: "PoT_Service"
+              required:
+                - deploy
+      responses:
+        '200':
+          description: Destroy script executed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  STATUS:
+                    type: string
+                    example: "Success"
+                  output:
+                    type: string
+                    example: "Destroy script output"
+                  DELETE STATUS:
+                    type: string
+                    example: "Any error messages from the script"
+        '400':
+          description: Bad request due to missing or invalid parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Description of the validation error"
+        '500':
+          description: Server error while executing the destroy script
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Detailed server-side error message"
+
+  /get-config:
+    get:
+      summary: Get the current execution configuration
+      responses:
+        '200':
+          description: Current configuration returned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  script:
+                    type: string
+                    description: Path of the currently executed script.
+                    example: "/home/ubuntu/PoT/scenario-generator_nodes.sh"
+                  params:
+                    type: array
+                    description: List of parameters passed to the script.
+                    items:
+                      type: string
+                    example: ["5", "2", "docker"]
