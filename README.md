@@ -1,11 +1,43 @@
 # OPoT
 This repository generates the needed parameters to build an OPoT system as well as deploying a Docker scenario with the required number of nodes.
 
-To run the OPoT system:
+## NCSRD infrastructure
+We currently have two VMs available at NCSRD for the transport network:
+
+* 10.160.3.155
+
+* 10.160.3.170
+
+The API for each OPoT environment is persistent and always listening for requests.
+
+In the case that no OPoT services are running and for the deployment of a OPoT service:
+```bash
+curl -X POST http://10.160.3.155:5002/run-service     -H "Content-Type: application/json"      -d '{"deploy": "PoT_Service", "NodePoT": 5, "NodeNoPoT": 2, "option": "docker”}'
 ```
-./scenario-generator.sh n docker
+
+NodePoT defines the number of nodes with PoT.
+
+NodeNoPoT defines the number of nodes without PoT.
+
+To delete a service:
+```bash
+curl -X DELETE http://10.160.3.155:5002/delete-service    -H "Content-Type: application/json"      -d ‘{"deploy": “PoT_Service”}'
 ```
-Change n with the number of nodes to be deployed in the scenario. 
+
+If the orchestrator decides to deploy in another environment due to LoT levels falling below the threshold, the deployment can alternatively be performed on 10.160.3.170.
+
+When deployed, the PoT controller will return the JWT token. To request PoT parameters: (e.g.,request to the secure oracle, where the Authorization bearer will need to be changed:
+```bash
+curl -X GET "http://10.160.3.213:3001/api/transactions/getPoT?serviceID=57310caf-bcc4-4008-82b8-6cfa6263bbcd"      -H "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NTk5MTQwNTksImV4cCI6MTc2MDAwMDQ1OSwiYXVkIjoiaHR0cDovL215YXBwLmNvbSIsImlzcyI6Im15YXBwIn0.MOlvboA7nUSP7KHFur69MY0Qg4z5dDdFHW7c_4TSQKgYYKNuxj38NqjfY0iuHZ0KNI46o-JN4AL_As6fXcSwmNEhREsKrp8aUPrlfcXVY_Ncm0yVqMj-4I5a5KRMq4lQXo36gzDqJnGi_qn1Dy7VA0dQTMqj89lqtw7l1JvROzo"      -H "Content-Type: application/json"
+```
+
+
+To run the OPoT system (standalone):
+```
+./scenario-generator_nodes.sh X Y docker
+```
+Change X with the number of nodes with PoT to be deployed in the scenario. 
+Change Y with the number of nodes without PoT to be deployed in the scenario.
 
 Parameter "docker" is optional, when included, it generates the docker scenario. If not, it will just generate the OPoT parameters.
 
@@ -34,6 +66,8 @@ influx -database 'int_telemetry_db' -execute 'SELECT * FROM int_telemetry'
 ```
 
 If the system has been deployed correctly, both host will have conectivity and metrics will be stored in the influx database
+
+# Alternative scenarios
 
 There are two "malicious" alternative scenarios to prove the non working of the system in the presence of malicious nodes.
 
@@ -92,3 +126,4 @@ https://hub.docker.com/r/mattinelorza/pot
 
 <> table_delete PoT.t_pot 0 <> 
 <> table_dump PoT.t_pot <>  
+
