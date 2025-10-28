@@ -4,9 +4,9 @@ This repository generates the needed parameters to build an OPoT service as well
 ## NCSRD infrastructure
 We currently have two VMs available at NCSRD for the transport network:
 
-* 10.160.3.155
-
 * 10.160.3.170
+
+* 10.160.3.169
 
 The API for each OPoT environment is persistent and always listening for requests.
 
@@ -146,5 +146,6 @@ https://hub.docker.com/r/mattinelorza/pot
 
 <> table_delete PoT.t_pot 0 <> 
 <> table_dump PoT.t_pot <>  
+
 
 
