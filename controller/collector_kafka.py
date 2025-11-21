@@ -174,7 +174,7 @@ class IntCollector():
             logger.info("Reports available: %s", len(self.reports))
             #logger.info("Report details: %s", self.reports)
             #logger.info("DLT: %s", len(DLT_reports))
-            logger.info("Informacion enviada en categoryTrustSources a la DLT: %s", DLT_reports)
+            logger.info("Information sent to categoryTrustSources in DLT: %s", DLT_reports)
 
             #category_trust_sources = [self._prepare_reports(report) for report in self.reports]
 
@@ -193,12 +193,12 @@ class IntCollector():
             try:
                 response = requests.post(POST_URL, json=payload, headers=headers)
                 if response.status_code == 200:
-                    logger.info("Successfully sent data to REST API: %s", response.json())
-                    logger.info("Mensaje de prueba %s",DLT_reports)
+                    logger.info("Successfully sent data to SECURE ORACLE: %s", response.json())
+                    logger.info("DLT report: %s",DLT_reports)
                 else:
-                    logger.info("Failed to send data to REST API: %s", response.text)
+                    logger.info("Failed to send data to SECURE ORACLE: %s", response.text)
             except Exception as e:
-                logger.info("Exception while sending data to REST API: %s", e)
+                logger.info("Exception while sending data to SECURE ORACLE: %s", e)
         else:
             logger.info("Skipping API call: JWT token is missing.")
 
