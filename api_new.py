@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify
 import subprocess
 import os
 from controller.collector_kafka import get_jwt_token
+import datetime
+import secrets
 
 app = Flask(__name__)
 
@@ -13,6 +15,27 @@ current_config = {
 
 # Directorio base para los scripts
 SCRIPT_BASE_DIR = "/home/tid/PoT"
+
+def generate_hw_attestation_evidence():
+    # Timestamp 
+    timestamp = datetime.datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+
+    # Nonce RND 16 bytes in hex
+    nonce = secrets.token_hex(16)
+
+    # Signature 32 bytes in hex
+    signature = "0x" + secrets.token_hex(32)
+
+    return {
+        "securityProbeEvidence": {
+            "timestamp": timestamp,
+            "nonce": nonce,
+            "signatureAlgorithmType": "ES256K",
+            "signature": signature,
+            "keyRef": "did:example:issuer#key-1"
+        }
+    }
+
 
 @app.route('/run-service', methods=['POST'])
 def run_command():
@@ -63,10 +86,12 @@ def run_command():
     try:
         result = subprocess.run(command, shell=True, capture_output=True, text=True)
         jwt_token = get_jwt_token()
+        hw_attestation = generate_hw_attestation_evidence()
         return jsonify({
             'STATUS': 'Success',
-            'SSSS OUTPUT': result.stdout,
-            'JWT_TOKEN': jwt_token
+            'JWT_TOKEN': jwt_token,
+            'HW ATTESTATION EVIDENCE': hw_attestation,
+            'SSSS OUTPUT': result.stdout
         })
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
