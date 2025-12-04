@@ -57,10 +57,37 @@ def handle_calculate_lpcs(x_points, prime):
         lpcs.append(lpc_value)
     return lpcs
 
-# Generate SIZE random points
-x = np.random.randint(-p+1,p, size=(SIZE)) #(-p+1,p, size=(SIZE))
+# Function to calculate parameters with retry logic
+def calculate_parameters_with_retry(size, prime, max_retries=100):
+    for attempt in range(max_retries):
+        try:
+            # Generate SIZE random points
+            x = np.random.randint(-prime+1, prime, size=(size))
+            
+            poly1, coeff1 = pol_1(size, prime)
+            poly2, coeff2 = pol_2(size, prime)
+            
+            # Calculate polynomial points and lpcs
+            y1 = [poly1(i) for i in x]
+            y2 = [poly2(i) for i in x]
+            y1_noTTL = y1
+            lpc = handle_calculate_lpcs(x, prime)
+            
+            # If we got here without error, return the values
+            return x, poly1, coeff1, poly2, coeff2, y1, y2, y1_noTTL, lpc
+        
+        except ValueError as e:
+            if 'inverse' in str(e):
+                print(f"Intento {attempt + 1}: Error en inversa modular, generando nuevos valores...")
+                continue
+            else:
+                raise
+    
+    # If we exhausted all retries
+    raise RuntimeError(f"No se pudo calcular parámetros válidos después de {max_retries} intentos")
 
-poly1,coeff1 = pol_1(SIZE, p)
+# Generate parameters with automatic retry
+x, poly1, coeff1, poly2, coeff2, y1, y2, y1_noTTL, lpc = calculate_parameters_with_retry(SIZE, p)
 
 # Buid secret polynomial
 poly_str = "Secret Polynomial: "
@@ -73,8 +100,6 @@ for i, c in enumerate(coeff1):
 # Print secret polynomial
 print(poly_str)
 
-poly2,coeff2 = pol_2(SIZE, p)
-
 # Build public polynomial
 poly_str = "Public Polynomial: "
 for i, c in enumerate(coeff2):
@@ -85,12 +110,6 @@ for i, c in enumerate(coeff2):
 
 # Print public polynomial
 print(poly_str)
-
-# Calculate polynomial points and lpcs
-y1 = [poly1(i) for i in x]
-y2 = [poly2(i) for i in x]
-y1_noTTL = y1
-lpc = handle_calculate_lpcs(x,p)
 
 ttl_list = np.arange(64, 64 - SIZE, -1) #64 - numero de nodos
 #Substract the ttl value of each jump
