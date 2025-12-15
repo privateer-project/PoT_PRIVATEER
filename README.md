@@ -12,7 +12,10 @@ The API for each OPoT environment is persistent and always listening for request
 
 In the case that no OPoT services are running and for the deployment of a OPoT service:
 ```bash
-curl -X POST http://10.160.3.170:5002/run-service     -H "Content-Type: application/json"      -d '{"deploy": "PoT_Service", "NodePoT": 5, "NodeNoPoT": 2, "option": "docker”}'
+curl -X POST http://10.160.3.170:5002/run-service \
+  -H "Content-Type: application/json" \
+  -d '{"deploy":"PoT_Service","NodePoT":5,"NodeNoPoT":2,"option":"docker"}'
+
 ```
 
 NodePoT defines the number of nodes with PoT.
@@ -146,6 +149,7 @@ https://hub.docker.com/r/mattinelorza/pot
 
 <> table_delete PoT.t_pot 0 <> 
 <> table_dump PoT.t_pot <>  
+
 
 
 
