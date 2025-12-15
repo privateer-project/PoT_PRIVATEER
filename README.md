@@ -44,7 +44,9 @@ The output will be simmilar to the following:
 
 To delete a service:
 ```bash
-curl -X DELETE http://10.160.3.170:5002/delete-service    -H "Content-Type: application/json"      -d ‘{"deploy": “PoT_Service”}'
+curl -X DELETE http://10.160.3.170:5002/delete-service \
+  -H "Content-Type: application/json" \
+  -d '{"deploy":"PoT_Service"}'
 ```
 
 If the orchestrator decides to deploy in another environment due to LoT levels falling below the threshold, the deployment can alternatively be performed on 10.160.3.170.
@@ -149,6 +151,7 @@ https://hub.docker.com/r/mattinelorza/pot
 
 <> table_delete PoT.t_pot 0 <> 
 <> table_dump PoT.t_pot <>  
+
 
 
 
