@@ -1,11 +1,12 @@
 # UC2 NAT Privateer Project
 ## Overview
 This README provides the steps required to implement UC2 using NAT Privateer configuration.
+Scripts have been created for each VM, however here are the steps to do it manually
 
 ## Steps to Implement UC2
 Steps to reproduce the UC2 NAT Privateer Project:
 
-1. Tunnel for connectivity between MV1 & MV2
+# 1. Tunnel for connectivity between MV1 & MV2
 Since MV1 (10.160.201.88) and MV2 (10.160.101.160) are on different Layer 2 domains and require a direct link for policy routing, an IPIP tunnel was established.
 
 ### On MV1:
@@ -32,7 +33,7 @@ sudo ip addr add 172.30.1.2/30 dev tun0
 sudo sysctl -w net.ipv4.conf.tun0.rp_filter=0
 ```
 
-2. Docker Chain Configuration
+# 2. Docker Chain Configuration
 Configuring the internal routing within the containers to force the traffic flow: h1 -> ingressNode -> middle1Node -> middle2Node -> egressNode -> h2.
 A prerequisite for all containers is to have IP Forwarding enabled:
 ```bash
@@ -69,7 +70,7 @@ sysctl -w net.ipv4.conf.all.send_redirects=0
 sysctl -w net.ipv4.conf.default.send_redirects=0
 sysctl -w net.ipv4.conf.eth0.send_redirects=0
 ```
-3. Host MV2 Configuration
+# 3. Host MV2 Configuration
 Configuring MV2 to intercept tunnel traffic and force it into the Docker chain.
 On MV2:
 A prerequisite is to have IP Forwarding enabled, as it was configured on the docker containers:
@@ -85,7 +86,7 @@ sudo ip rule add iif tun0 lookup 100
 ```bash
 sudo ip route add 10.160.101.147/32 via 10.1.1.3 table 100
 ```
-4. Destination Return Path (MV3)
+# 4. Destination Return Path (MV3)
 MV3 receives packets with private source IPs and needs to know how to reply.
 ### On MV3:
 Added a static route to send traffic destined for the tunnel networks back to MV2.
@@ -94,4 +95,5 @@ Added a static route to send traffic destined for the tunnel networks back to MV
 sudo ip route add 172.30.1.0/24 via 10.160.101.160
 ```
 By establishing all the above commented rules and configurations, full end-to-end connectivity was achieved through the custom service Docker container chain.
+
 
