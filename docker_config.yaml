@@ -1,0 +1,76 @@
+- name: Configure Privateer Docker containers
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    # ===== EDIT THIS ONLY =====
+    chain_length: 4
+    # =========================
+
+    dest_ip: 10.160.101.147
+    middle_count: "{{ chain_length | int - 2 }}"
+
+  tasks:
+
+  - name: Initialize all_nodes
+    set_fact:
+      all_nodes:
+        - h1
+        - ingressNode
+
+  - name: Add middle nodes to all_nodes
+    set_fact:
+      all_nodes: "{{ all_nodes + ['middleNode' + item|string] }}"
+    loop: "{{ range(1, middle_count | int + 1) | list }}"
+    when: middle_count | int > 0
+
+  - name: Add egressNode and h2 to all_nodes
+    set_fact:
+      all_nodes: "{{ all_nodes + ['egressNode', 'h2'] }}"
+
+  - name: Initialize sudo_nodes
+    set_fact:
+      sudo_nodes:
+        - ingressNode
+        - egressNode
+
+  - name: Add middle nodes to sudo_nodes
+    set_fact:
+      sudo_nodes: "{{ sudo_nodes + ['middleNode' + item|string] }}"
+    loop: "{{ range(1, middle_count | int + 1) | list }}"
+    when: middle_count | int > 0
+
+  - name: Enable IP forwarding on all containers
+    shell: >
+      docker exec {{ item }} {{ 'sudo' if item in sudo_nodes else '' }} sysctl -w net.ipv4.ip_forward=1
+    loop: "{{ all_nodes }}"
+
+  - name: Disable ICMP redirects on all containers
+    shell: |
+      docker exec {{ item }} {{ 'sudo' if item in sudo_nodes else '' }} sysctl -w net.ipv4.conf.all.send_redirects=0
+      docker exec {{ item }} {{ 'sudo' if item in sudo_nodes else '' }} sysctl -w net.ipv4.conf.default.send_redirects=0
+      docker exec {{ item }} {{ 'sudo' if item in sudo_nodes else '' }} sysctl -w net.ipv4.conf.eth0.send_redirects=0
+    loop: "{{ all_nodes }}"
+
+  - name: Route from h1 to ingressNode
+    shell: docker exec h1 ip route replace {{ dest_ip }} via 10.1.1.2
+
+  - name: Route from ingressNode to first middle node
+    shell: >
+      docker exec ingressNode sudo ip route replace {{ dest_ip }} via 10.0.1.2 dev eth2
+    when: middle_count | int > 0
+
+  - name: Route between middle nodes
+    shell: >
+      docker exec middleNode{{ item }} sudo ip route replace {{ dest_ip }} via 10.0.{{ item | int + 1 }}.2 dev eth2
+    loop: "{{ range(1, middle_count | int) | list }}"
+    when: middle_count | int > 1
+
+  - name: Route from last middle node to egressNode
+    shell: >
+      docker exec middleNode{{ middle_count }} sudo ip route replace {{ dest_ip }} via 10.0.{{ middle_count | int + 1 }}.2 dev eth2
+    when: middle_count | int > 0
+
+  - name: Route from egressNode to h2
+    shell: >
+      docker exec egressNode sudo ip route replace {{ dest_ip }} via 10.1.2.3 dev eth2
