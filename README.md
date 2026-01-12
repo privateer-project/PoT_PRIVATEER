@@ -39,13 +39,30 @@ A prerequisite for all containers is to have IP Forwarding enabled:
 sysctl -w net.ipv4.ip_forward=1
 ```
 Static Routing Rules (Inside Containers):
-h1: ip route add 10.160.101.147 via 10.1.1.2 (to ingressNode)
-ingressNode: ip route add 10.160.101.147 via 10.0.1.2 dev eth2 (to middleNode1)
-middleNode1: ip route add 10.160.101.147 via 10.0.2.2 dev eth2 (to middleNode2)
-middleNode2: ip route add 10.160.101.147 via 10.0.3.2 (to egressNode)
-egressNode: ip route add 10.160.101.147 via 10.1.2.3 dev eth2 (to h2)
+h1: (to ingressNode) 
+```bash
+ip route add 10.160.101.147 via 10.1.1.2
+```
+ingressNode: (to middleNode1)
+```bash
+ip route add 10.160.101.147 via 10.0.1.2 dev eth2
+```
+middleNode1: (to middleNode2) 
+```bash
+ip route add 10.160.101.147 via 10.0.2.2 dev eth2
+```
+middleNode2: (to egressNode)
+```bash
+ip route add 10.160.101.147 via 10.0.3.2
+```
+egressNode: (to h2)
+```bash
+ip route add 10.160.101.147 via 10.1.2.3 dev eth2
+```
 h2: Uses default gateway (MV2) to exit. No IP route rule is needed.
+
 Another configuration that was executed was to disable ICMP Redirects to prevent containers and host from marking connections as "Invalid" due to inefficient routing paths or to just display the icmp redirects when the ping was done.
+
 Inside Containers:
 ```bash
 sysctl -w net.ipv4.conf.all.send_redirects=0
@@ -77,3 +94,4 @@ Added a static route to send traffic destined for the tunnel networks back to MV
 sudo ip route add 172.30.1.0/24 via 10.160.101.160
 ```
 By establishing all the above commented rules and configurations, full end-to-end connectivity was achieved through the custom service Docker container chain.
+
